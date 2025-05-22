@@ -11,6 +11,7 @@ permissions:
 jobs:
   release:
     runs-on: ubuntu-latest
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -30,7 +31,6 @@ jobs:
           python -m build
           ls -la dist/
 
-      # —— 新增：把生成的文件名设置到环境变量里 —— #
       - name: Capture artifact paths
         id: capture
         run: |
@@ -38,33 +38,25 @@ jobs:
           echo "WHL_PATH=$(ls dist/*.whl)"    >> $GITHUB_ENV
 
       - name: Create GitHub Release
-        id: create_release
-        uses: actions/create-release@v1
+        uses: softprops/action-gh-release@v1
         with:
           tag_name: ${{ github.ref_name }}
-          release_name: Release ${{ github.ref_name }}
+          name: Release ${{ github.ref_name }}
           draft: false
           prerelease: false
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-      # —— 修改：用环境变量里实际的路径 —— #
       - name: Upload source archive
-        uses: actions/upload-release-asset@v1
+        uses: softprops/action-gh-release@v1
         with:
-          upload_url:    ${{ steps.create_release.outputs.upload_url }}
-          asset_path:    ${{ env.TAR_PATH }}
-          asset_name:    ${{ github.ref_name }}.tar.gz
-          asset_content_type: application/gzip
+          files: ${{ env.TAR_PATH }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Upload wheel
-        uses: actions/upload-release-asset@v1
+        uses: softprops/action-gh-release@v1
         with:
-          upload_url:    ${{ steps.create_release.outputs.upload_url }}
-          asset_path:    ${{ env.WHL_PATH }}
-          asset_name:    ${{ github.ref_name }}.whl
-          asset_content_type: application/octet-stream
+          files: ${{ env.WHL_PATH }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
