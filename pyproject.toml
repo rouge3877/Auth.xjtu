@@ -1,0 +1,28 @@
+[build-system]
+requires = ["setuptools >= 77.0.3"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "auth_xjtu"
+version = "0.1.0"
+authors = [
+  { name="Rouge Lin", email="rougeLin3877@gmail.com" },
+]
+description = "Automated XJTU OpenPlatform OAuth authentication for Python"
+readme = "README.md"
+requires-python = ">=3.9"
+keywords = ["xjtu", "auth_xjtuoauth", "authentication", "python"]
+dependencies = [
+    "requests >= 2.28.1",
+    "pycryptodome >= 3.15.0",
+]
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "Operating System :: OS Independent",
+]
+license = "MIT"
+license-files = ["LICEN[CS]E*"]
+
+[project.urls]
+Homepage = "https://github.com/rouge3877/Auth.xjtu"
+Issues = "https://github.com/rouge3877/Auth.xjtu/issues"
