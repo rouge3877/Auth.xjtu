@@ -39,6 +39,9 @@ jobs:
           release_name: Release ${{ github.ref_name }}
           draft: false
           prerelease: false
+       env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
 
       # 6. 上传源码包 (.tar.gz)
       - name: Upload source archive
