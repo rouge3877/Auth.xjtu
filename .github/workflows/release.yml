@@ -56,6 +56,8 @@ jobs:
           asset_path:    ${{ env.TAR_PATH }}
           asset_name:    ${{ github.ref_name }}.tar.gz
           asset_content_type: application/gzip
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Upload wheel
         uses: actions/upload-release-asset@v1
@@ -64,3 +66,5 @@ jobs:
           asset_path:    ${{ env.WHL_PATH }}
           asset_name:    ${{ github.ref_name }}.whl
           asset_content_type: application/octet-stream
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
