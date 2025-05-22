@@ -137,31 +137,11 @@ class Authenticator:
         self,
         username: str,
         password: str,
-        log_file_path: str = "/tmp/authenticator.log",
+        logger: logging.Logger = None,
+        log_path: str = None,
         *_args,
         **kwargs,
     ):
-
-        # setup logging
-        self.logger = logging.getLogger(
-            f"{self.__class__.__name__}({username})"
-        )
-        self.logger.setLevel(logging.DEBUG)
-        formatter = logging.Formatter(
-            "[%(asctime)s %(name)s %(levelname)s]: %(message)s",
-            datefmt="%b %d %H:%M:%S"
-        )
-
-        console_handler = logging.StreamHandler()
-        console_handler.setLevel(logging.INFO)
-        console_handler.setFormatter(formatter)
-        self.logger.addHandler(console_handler)
-
-        logfile_handler = logging.FileHandler(log_file_path)
-        logfile_handler.setLevel(logging.DEBUG)
-        logfile_handler.setFormatter(formatter)
-        self.logger.addHandler(logfile_handler)
-
         # initialize instance variables
         self.username = username
         self.password = Authenticator.encrypt_password(password)
@@ -169,6 +149,30 @@ class Authenticator:
         # initialize session
         self.session = requests.Session()
         self.session.cookies = requests.cookies.RequestsCookieJar()
+
+        if logger is not None:
+            self.logger = logger
+        else:
+            # setup logging
+            self.logger = logging.getLogger(
+                f"{self.__class__.__name__}({username})"
+            )
+            self.logger.setLevel(logging.DEBUG)
+            formatter = logging.Formatter(
+                "[%(asctime)s %(name)s %(levelname)s]: %(message)s",
+                datefmt="%b %d %H:%M:%S"
+            )
+
+            console_handler = logging.StreamHandler()
+            console_handler.setLevel(logging.INFO)
+            console_handler.setFormatter(formatter)
+            self.logger.addHandler(console_handler)
+
+            if log_path is not None:
+                logfile_handler = logging.FileHandler(log_path)
+                logfile_handler.setLevel(logging.DEBUG)
+                logfile_handler.setFormatter(formatter)
+                self.logger.addHandler(logfile_handler)
 
         self.logger.info(
             "Authenticator initialized for user: %s", self.username
