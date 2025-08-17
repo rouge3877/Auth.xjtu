@@ -4,14 +4,6 @@
 ## Introduction
 `auth-xjtu` is a `Python` package for authentication at XJTU that automates the authentication process against Xi'an Jiaotong University’s (XJTU) OpenPlatform OAuth system. It handles the complete login flow, including AES‑encrypted password submission, CAPTCHA cookie retrieval, and redirect management, returning a valid session cookie jar ready for further HTTP requests.
 
-Features:
-
-* **AES Password Encryption**: Replicates XJTU’s client‑side AES encryption with PKCS7 padding.
-* **Cookie Management**: Automatically captures and maintains all necessary cookies across intermediate redirects.
-* **Redirect Handling**: Intercepts HTTP 302 responses instead of following redirects, extracting `Location` headers for custom flows.
-* **Logging**: Built‑in logging with configurable console and file handlers, using standard `logging` module.
-* **Simple Interface**: Single `Authenticator` class with a `login` method that returns a `requests` cookie jar.
-
 ## Installation
 
 Install via pip:
@@ -40,7 +32,6 @@ dest_app_url = "http://rg.lib.xjtu.edu.cn:8086" # for example
 # Create an authenticator instance
 auth = Authenticator(username, password)
 
-# Perform login and retrieve cookies
 ret, message = auth.login(dest_app_url)
 
 if ret == 0:
@@ -83,16 +74,19 @@ This login method performs a multi-step authentication process:
 3. Constructs the necessary payload for authentication using the provided credentials.
 4. Submits the payload and follows redirects to complete the login process.
 
-    dest_app_url (str): The URL of the destination application requiring authentication.
+`dest_app_url (str)`: The URL of the destination application requiring authentication.
 
-    Tuple[int, str]: A tuple containing:
-        - int: Status code indicating the result of the authentication process:
-            - 0: Success.
-            - 1: Failure to retrieve the authentication page.
-            - 2: Failure to construct the authentication payload.
-            - 3: Failure during the login process after submitting the payload.
-        - str: An error message describing the failure, or an empty string on success.
+`Tuple[int, str]`: A tuple containing:
+- `int`: Status code indicating the result of the authentication process:
+    - 0: Success.
+    - 1: Failure to retrieve the authentication page.
+    - 2: Failure to construct the authentication payload.
+    - 3: Failure during the login process after submitting the payload.
+- `str`: An error message describing the failure, or an empty string on success.
 
+## TODO
+- [ ]: Automate entry point discovery (`src/auth_xjtu/core/find_entry.py`)
+- [ ]: More tests
 
 ## License
 This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for details.
