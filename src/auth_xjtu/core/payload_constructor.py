@@ -16,9 +16,9 @@ from typing import Tuple, Optional
 from Crypto.PublicKey import RSA
 from Crypto.Cipher import PKCS1_v1_5
 
+
 def _get_execution_token(
-    session: requests.Session, 
-    auth_page: requests.Response
+    session: requests.Session, auth_page: requests.Response
 ) -> Tuple[str, Optional[requests.Session]]:
     """
     Extract the 'execution' token from the authentication page.
@@ -31,21 +31,21 @@ def _get_execution_token(
         Tuple[str, Optional[requests.Session]]: A tuple containing the 'execution' token and the session object.
     """
     try:
-        soup = BeautifulSoup(auth_page.text, 'html.parser')
-        execution_input = soup.find('input', {'name': 'execution'})
-        if not execution_input or 'value' not in execution_input.attrs:
+        soup = BeautifulSoup(auth_page.text, "html.parser")
+        execution_input = soup.find("input", {"name": "execution"})
+        if not execution_input or "value" not in execution_input.attrs:
             error_str = "Error: Could not find 'execution' token in page."
             return error_str, None
 
-        execution = execution_input['value']
+        execution = execution_input["value"]
         return execution, session
     except Exception as e:
         error_str = f"Error: Failed to extract 'execution' token. {e}"
         return error_str, None
 
+
 def _get_public_key(
-    session: requests.Session,
-    public_key_url: str
+    session: requests.Session, public_key_url: str
 ) -> Tuple[str, Optional[requests.Session]]:
     """
     Fetch the RSA public key from the server.
@@ -66,10 +66,9 @@ def _get_public_key(
         error_str = f"Error: Failed to fetch public key from {public_key_url}. {e}"
         return error_str, None
 
+
 def _encrypt_password(
-    session: requests.Session,
-    public_key: str,
-    password: str
+    session: requests.Session, public_key: str, password: str
 ) -> Tuple[str, Optional[requests.Session]]:
     """
     Encrypt the password using the provided RSA public key.
@@ -85,16 +84,17 @@ def _encrypt_password(
     try:
         rsa_key = RSA.import_key(public_key)
         cipher = PKCS1_v1_5.new(rsa_key)
-        encrypted_bytes = cipher.encrypt(password.encode('utf-8'))
-        encrypted_b64 = base64.b64encode(encrypted_bytes).decode('utf-8')
+        encrypted_bytes = cipher.encrypt(password.encode("utf-8"))
+        encrypted_b64 = base64.b64encode(encrypted_bytes).decode("utf-8")
         encrypted_password = f"__RSA__{encrypted_b64}"
         return encrypted_password, session
     except Exception as e:
         error_str = f"Error: Failed to encrypt password. {e}"
         return error_str, None
 
+
 def _generate_fingerprint(
-    session: requests.Session
+    session: requests.Session,
 ) -> Tuple[str, Optional[requests.Session]]:
     """
     Generate a simulated device fingerprint.
@@ -112,11 +112,12 @@ def _generate_fingerprint(
         error_str = f"Error: Failed to generate fingerprint. {e}"
         return error_str, None
 
+
 def payload_constructor(
-    session: requests.Session, 
-    auth_page: requests.Response, 
-    username: str, 
-    password: str
+    session: requests.Session,
+    auth_page: requests.Response,
+    username: str,
+    password: str,
 ) -> Tuple[str, Optional[requests.Session]]:
     """
     Construct POST payload using established session and final login page response.
@@ -132,7 +133,7 @@ def payload_constructor(
         Optional[requests.Session]: session after process successfully, None otherwise.
     """
 
-    _public_key_url = urljoin(auth_page.url, '/cas/jwt/publicKey')
+    _public_key_url = urljoin(auth_page.url, "/cas/jwt/publicKey")
 
     execution, session = _get_execution_token(session, auth_page)
     if not session:
@@ -150,19 +151,21 @@ def payload_constructor(
     if not session:
         return fp_visitor_id, None
 
-    payload_string = urlencode({
-        "username":         username,
-        "password":         encrypted_password,
-        "captcha":          "",
-        "currentMenu":      "1",
-        "failN":            "0",
-        "mfaState":         "",
-        "execution":        execution,
-        "_eventId":         "submit",
-        "geolocation":      "",
-        "fpVisitorId":      fp_visitor_id,
-        "trustAgent":       "",
-        "submit1":          "Login1"
-    })
-    
+    payload_string = urlencode(
+        {
+            "username": username,
+            "password": encrypted_password,
+            "captcha": "",
+            "currentMenu": "1",
+            "failN": "0",
+            "mfaState": "",
+            "execution": execution,
+            "_eventId": "submit",
+            "geolocation": "",
+            "fpVisitorId": fp_visitor_id,
+            "trustAgent": "",
+            "submit1": "Login1",
+        }
+    )
+
     return payload_string, session

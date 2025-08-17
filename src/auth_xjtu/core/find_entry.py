@@ -2,6 +2,7 @@
 Find the login point URL in the HTML content of the specified URL.
 """
 
+
 def find_entry(app_url: str) -> str:
     """
     Finds a potential login URL from the entry page of a web application.
