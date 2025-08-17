@@ -34,7 +34,7 @@ def follow_redirects(
         
         # Check the status code of the final page
         if response.status_code == 200:
-            return response.url, response
+            return response.url, session
         else:
             error_reason = f"[!] Error: Final page status code is {response.status_code}, not 200."
             return error_reason, None
