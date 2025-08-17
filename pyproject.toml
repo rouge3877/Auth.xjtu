@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "auth_xjtu"
-version = "0.1.0"
+version = "0.2.0"
 authors = [
   { name="Rouge Lin", email="rougeLin3877@gmail.com" },
 ]
@@ -15,6 +15,8 @@ keywords = ["xjtu", "auth_xjtuoauth", "authentication", "python"]
 dependencies = [
     "requests >= 2.28.1",
     "pycryptodome >= 3.15.0",
+    "beautifulsoup4 >= 4.13.4",
+    "pytest == 8.4.1"
 ]
 classifiers = [
     "Programming Language :: Python :: 3",
