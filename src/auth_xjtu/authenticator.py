@@ -136,6 +136,21 @@ class Authenticator:
         login_headers = {"Content-Type": "application/x-www-form-urlencoded"}
         self.session.headers.update(login_headers)
         login_response = self.session.post(auth_url, data=ret_payload)
+        if login_response.status_code != 200:
+            error_message = (
+                f"Login failed with status code {login_response.status_code}, "
+                f"response: {login_response.text}"
+            )
+            self.logger.error(error_message)
+            return 4, error_message
+        if "西安交通大学统一身份认证网关" in login_response.text:
+            error_message = (
+                f"Login failed with status code {login_response.status_code}, "
+                f"Perhaps the credentials are incorrect."
+            )
+            self.logger.error(error_message)
+            return 4, error_message
+
         ret_url, ret_session = follow_redirects(self.session, login_response.url)
         if ret_session:
             self.logger.info("Login successful!")
