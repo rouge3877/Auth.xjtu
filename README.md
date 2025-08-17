@@ -35,26 +35,21 @@ from auth_xjtu import Authenticator
 
 username = "your_xjtu_id"
 password = "your_plain_password"
-dest_url = "http://rg.lib.xjtu.edu.cn:8086" # for example
-dest_host = "rg.lib.xjtu.edu.cn:8086"       # for example
+dest_app_url = "http://rg.lib.xjtu.edu.cn:8086" # for example
 
 # Create an authenticator instance
 auth = Authenticator(username, password)
 
 # Perform login and retrieve cookies
-cookies = auth.login(dest_url, dest_host)
+ret, message = auth.login(dest_app_url)
 
-# Use the cookies in subsequent requests
-# for test, can diff with the dest_url above
-import requests
-response = requests.get(
-    "http://ehall.xjtu.edu.cn/new/index.html?browser=no",
-    cookies=cookies
-)
-if response.status_code == 200:
-    print("Authenticated successfully!")
+if ret == 0:
+    print("==============Login successful!==============")
+    print("Content in %s:", dest_app_url)
+    print(auth.session.get(dest_app_url).text)
 else:
-    print("Authentication failed.")
+    print("Login failed:", message)
+
 ```
 
 ## Logging
@@ -76,6 +71,27 @@ cookies = auth.login(dest_url, dest_host)
 ...
 
 ```
+
+## Detail
+
+### Login process
+Authenticate the user and navigate to the destination application.
+
+This login method performs a multi-step authentication process:
+1. Identifies the entry point URL for the destination application.
+2. Follows redirects to reach the authentication page.
+3. Constructs the necessary payload for authentication using the provided credentials.
+4. Submits the payload and follows redirects to complete the login process.
+
+    dest_app_url (str): The URL of the destination application requiring authentication.
+
+    Tuple[int, str]: A tuple containing:
+        - int: Status code indicating the result of the authentication process:
+            - 0: Success.
+            - 1: Failure to retrieve the authentication page.
+            - 2: Failure to construct the authentication payload.
+            - 3: Failure during the login process after submitting the payload.
+        - str: An error message describing the failure, or an empty string on success.
 
 
 ## License
