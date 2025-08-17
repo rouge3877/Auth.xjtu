@@ -147,6 +147,9 @@ class Authenticator:
 
         return 0, ""
 
+    def get_session(self) -> requests.Session:
+        return self.session
+
 
 if __name__ == "__main__":
 
@@ -165,5 +168,5 @@ if __name__ == "__main__":
 
     if ret == 0:
         print("==============Login successful!==============")
-        print("Content in %s:", dest_app_url)
-        print(auth.session.get(dest_app_url).text)
+        session_for_login = auth.get_session()
+        print("Content in %s:\n%s", dest_app_url, session_for_login.get(dest_app_url).text)
