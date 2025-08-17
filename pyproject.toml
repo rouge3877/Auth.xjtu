@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "auth_xjtu"
-version = "0.2.0"
+version = "0.2.1"
 authors = [
   { name="Rouge Lin", email="rougeLin3877@gmail.com" },
 ]
