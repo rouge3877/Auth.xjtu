@@ -7,8 +7,8 @@ from typing import Tuple, Optional
 
 
 def follow_redirects(
-    start_url: str, 
-    session: requests.Session
+    session: requests.Session,
+    start_url: str
 ) -> Tuple[str, Optional[requests.Session]]:
     """
     Follow all 302 redirects from a starting URL until reaching a final page with status code 200.
@@ -54,7 +54,7 @@ if __name__ == "__main__":
                      '(KHTML, like Gecko) Chrome/108.0.0.0 Safari/537.36'
     })
 
-    final_redi_url, session = follow_redirects(start_url, session)
+    final_redi_url, session = follow_redirects(session, start_url)
     if session:
         print(f"[*] Final URL: {final_redi_url}")
     else:
