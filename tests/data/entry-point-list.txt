@@ -1,1 +1,4 @@
 https://ehall.xjtu.edu.cn/login
+https://class.xjtu.edu.cn/login
+https://bb.xjtu.edu.cn/
+http://rg.lib.xjtu.edu.cn:8086

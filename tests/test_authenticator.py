@@ -1,5 +1,6 @@
 import pytest
 import os
+import logging
 from pathlib import Path
 from auth_xjtu.authenticator import Authenticator
 
@@ -23,15 +24,16 @@ def load_list_file(file_name):
 
 class TestAuthenticator:
     def test_login(self):
+        app_urls_list = "entry-point-list.txt" # auto entry finding doesn't implemented
         username = os.getenv("TEST_USERNAME")
         password = os.getenv("TEST_PASSWORD")
+        test_logger = logging.getLogger("auth_xjtu.test")
+        test_logger.setLevel(logging.WARNING)
 
-        auth = Authenticator(username, password)
-        for dest_app_url in load_list_file("entry-point-list.txt"):
-            print(f"Testing login for URL: {dest_app_url}")
+        for dest_app_url in load_list_file(app_urls_list):
+            auth = Authenticator(username, password, logger=test_logger)
+            print(f"\nTesting login for URL: {dest_app_url}")
             ret, error_message = auth.login(dest_app_url)
             if ret == 0:
-                print(f"Login successful for {dest_app_url}")
-            else:
-                print(f"Login failed for {dest_app_url}: {error_message}")
+                print(f"  - Login successful for {dest_app_url}")
             assert ret == 0, f"Login failed for {dest_app_url}: {error_message}"
